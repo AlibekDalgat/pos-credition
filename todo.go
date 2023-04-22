@@ -1,11 +1,10 @@
-package todo
+package posCreditation
 
 import "errors"
 
-type TodoList struct {
-	Id          int    `json:"id" db:"id"`
-	Title       string `json:"title" db:"title" binding:"required"`
-	Description string `json:"description" db:"description"`
+type TodoShop struct {
+	Id    string `json:"id" db:"id"`
+	Title string `json:"title" db:"title" binding:"required"`
 }
 
 type UsersList struct {
@@ -26,26 +25,23 @@ type ListsItem struct {
 	ItemId int
 }
 
-type UpdateListInput struct {
-	Title       *string `json:"title"`
-	Description *string `json:"description"`
+type UpdateShopInput struct {
+	Title *string `json:"title"`
 }
 
-func (input UpdateListInput) Validate() error {
-	if input.Title == nil && input.Description == nil {
+func (input UpdateShopInput) Validate() error {
+	if input.Title == nil {
 		return errors.New("update strukturunuki mağnalar yoq")
 	}
 	return nil
 }
 
-type UpdateItemInput struct {
-	Title       *string `json:"title"`
-	Description *string `json:"description"`
-	Done        *bool   `json:"done"`
+type UpdateMarketPlaceInput struct {
+	Title *string `json:"title"`
 }
 
-func (input UpdateItemInput) Validate() error {
-	if input.Title == nil && input.Description == nil && input.Done == nil {
+func (input UpdateMarketPlaceInput) Validate() error {
+	if input.Title == nil {
 		return errors.New("update strukturunuki mağnalar yoq")
 	}
 	return nil

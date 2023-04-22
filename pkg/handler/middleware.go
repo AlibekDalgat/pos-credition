@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	"net/http"
 	"strings"
 )
@@ -10,7 +11,20 @@ import (
 const (
 	authorizationHeader = "Authorization"
 	userCtx             = "userId"
+	isAdmin             = "isAdmin"
 )
+
+func (h *Handler) roling(c *gin.Context) {
+	login := viper.GetString("admin.login")
+	password := viper.GetString("admin.password")
+	now_login, _ := c.Get("login")
+	now_password, _ := c.Get("password")
+	if login == now_login.(string) && password == now_password.(string) {
+		c.Set(isAdmin, true)
+	} else {
+		c.Set(isAdmin, false)
+	}
+}
 
 func (h *Handler) userIdentity(c *gin.Context) {
 	header := c.GetHeader(authorizationHeader)
@@ -47,4 +61,13 @@ func getUserId(c *gin.Context) (int, error) {
 	}
 
 	return idInt, nil
+}
+
+func checkRole(c *gin.Context) bool {
+	flag, _ := c.Get(isAdmin)
+	if flag.(bool) {
+		return true
+	} else {
+		return false
+	}
 }

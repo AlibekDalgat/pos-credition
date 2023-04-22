@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"github.com/AlibekDalgat/todo-app"
-	"github.com/AlibekDalgat/todo-app/pkg/handler"
-	"github.com/AlibekDalgat/todo-app/pkg/repository"
-	"github.com/AlibekDalgat/todo-app/pkg/service"
+	posCreditation "github.com/AlibekDalgat/pos-credition"
+	"github.com/AlibekDalgat/pos-credition/pkg/handler"
+	"github.com/AlibekDalgat/pos-credition/pkg/repository"
+	"github.com/AlibekDalgat/pos-credition/pkg/service"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -41,7 +41,7 @@ func main() {
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
 
-	srv := new(todo.Server)
+	srv := new(posCreditation.Server)
 	go func() {
 		if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil && err != http.ErrServerClosed {
 			logrus.Fatalf("htt server işletilgende xata boldu: %s", err.Error())

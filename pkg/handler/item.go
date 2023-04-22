@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/AlibekDalgat/todo-app"
+	"github.com/AlibekDalgat/pos-credition"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -19,7 +19,7 @@ func (h *Handler) createItem(c *gin.Context) {
 		return
 	}
 
-	var input todo.TodoItem
+	var input posCreditation.TodoItem
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -36,7 +36,7 @@ func (h *Handler) createItem(c *gin.Context) {
 }
 
 type getAllItemsResponse struct {
-	Data []todo.TodoItem `json:"data"`
+	Data []posCreditation.TodoItem `json:"data"`
 }
 
 func (h *Handler) getAllItems(c *gin.Context) {
@@ -93,7 +93,7 @@ func (h *Handler) updateItem(c *gin.Context) {
 		return
 	}
 
-	var input todo.UpdateItemInput
+	var input posCreditation.UpdateMarketPlaceInput
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return

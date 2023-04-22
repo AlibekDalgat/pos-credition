@@ -1,41 +1,40 @@
 package repository
 
 import (
-	"github.com/AlibekDalgat/todo-app"
+	posCreditation "github.com/AlibekDalgat/pos-credition"
 	"github.com/jmoiron/sqlx"
 )
 
 type Authorization interface {
-	CreateUser(user todo.User) (int, error)
-	GetUser(username, password string) (todo.User, error)
+	CreateUser(user posCreditation.User) (int, error)
+	GetUser(username, password string) (posCreditation.User, error)
 }
 
-type TodoList interface {
-	Create(userId int, list todo.TodoList) (int, error)
-	GetAll(userId int) ([]todo.TodoList, error)
-	GetById(userId, id int) (list todo.TodoList, err error)
-	UpdateById(userId, id int, input todo.UpdateListInput) error
+type TodoShop interface {
+	Create(shop posCreditation.TodoShop) (string, error)
+	GetAll(userId int) ([]posCreditation.TodoShop, error)
+	GetById(userId, id int) (list posCreditation.TodoShop, err error)
+	UpdateById(userId, id int, input posCreditation.UpdateShopInput) error
 	DeleteById(userId, id int) error
 }
 
 type TodoItem interface {
-	Create(listId int, item todo.TodoItem) (int, error)
-	GetAll(userId, listId int) ([]todo.TodoItem, error)
-	GetById(userId, itemId int) (todo.TodoItem, error)
-	UpdateById(userId, itemId int, input todo.UpdateItemInput) error
+	Create(listId int, item posCreditation.TodoItem) (int, error)
+	GetAll(userId, listId int) ([]posCreditation.TodoItem, error)
+	GetById(userId, itemId int) (posCreditation.TodoItem, error)
+	UpdateById(userId, itemId int, input posCreditation.UpdateMarketPlaceInput) error
 	DeleteById(userId, itemId int) error
 }
 
 type Repository struct {
 	Authorization
-	TodoList
+	TodoShop
 	TodoItem
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
-		Authorization: NewAuthPostgres(db),
-		TodoList:      NewTodoListPostgres(db),
-		TodoItem:      NewTodoItemPostgres(db),
+		TodoShop: NewTodoShopPostgres(db),
+		TodoItem: NewTodoItemPostgres(db),
 	}
 }

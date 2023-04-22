@@ -1,22 +1,21 @@
 package handler
 
 import (
-	"github.com/AlibekDalgat/todo-app"
+	"github.com/AlibekDalgat/pos-credition"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 )
 
-func (h *Handler) createList(c *gin.Context) {
-	userId, err := getUserId(c)
-	if err != nil {
-		return
+func (h *Handler) createShop(c *gin.Context) {
+	if ok := checkRole(c); ok {
+		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
 	}
-	var input todo.TodoList
+	var input posCreditation.TodoShop
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 	}
-	id, err := h.services.TodoList.Create(userId, input)
+	id, err := h.services.TodoShop.Create(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -27,8 +26,8 @@ func (h *Handler) createList(c *gin.Context) {
 	})
 }
 
-type getAllListsResponse struct {
-	Data []todo.TodoList `json:"data"`
+type getAllShopsResponse struct {
+	Data []posCreditation.TodoShop `json:"data"`
 }
 
 func (h *Handler) getAllLists(c *gin.Context) {
@@ -37,13 +36,13 @@ func (h *Handler) getAllLists(c *gin.Context) {
 		return
 	}
 
-	lists, err := h.services.TodoList.GetAll(userId)
+	lists, err := h.services.TodoShop.GetAll(userId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, getAllListsResponse{
+	c.JSON(http.StatusOK, getAllShopsResponse{
 		Data: lists,
 	})
 }
@@ -60,7 +59,7 @@ func (h *Handler) getListById(c *gin.Context) {
 		return
 	}
 
-	list, err := h.services.TodoList.GetById(userId, id)
+	list, err := h.services.TodoShop.GetById(userId, id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -81,13 +80,13 @@ func (h *Handler) updateList(c *gin.Context) {
 		return
 	}
 
-	var input todo.UpdateListInput
+	var input posCreditation.UpdateShopInput
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	if err := h.services.TodoList.UpdateById(userId, id, input); err != nil {
+	if err := h.services.TodoShop.UpdateById(userId, id, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -108,7 +107,7 @@ func (h *Handler) deleteList(c *gin.Context) {
 		return
 	}
 
-	err = h.services.TodoList.DeleteById(userId, id)
+	err = h.services.TodoShop.DeleteById(userId, id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

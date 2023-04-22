@@ -2,7 +2,7 @@ package repository
 
 import (
 	"fmt"
-	"github.com/AlibekDalgat/todo-app"
+	"github.com/AlibekDalgat/pos-credition"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 	"strings"
@@ -16,7 +16,7 @@ func NewTodoItemPostgres(db *sqlx.DB) *TodoItemPostgres {
 	return &TodoItemPostgres{db}
 }
 
-func (itemPostgres *TodoItemPostgres) Create(listId int, item todo.TodoItem) (int, error) {
+func (itemPostgres *TodoItemPostgres) Create(listId int, item posCreditation.TodoItem) (int, error) {
 	tx, err := itemPostgres.db.Begin()
 	if err != nil {
 		return 0, err
@@ -42,8 +42,8 @@ func (itemPostgres *TodoItemPostgres) Create(listId int, item todo.TodoItem) (in
 	return itemId, tx.Commit()
 }
 
-func (itemPostgres *TodoItemPostgres) GetAll(userId, listId int) ([]todo.TodoItem, error) {
-	var items []todo.TodoItem
+func (itemPostgres *TodoItemPostgres) GetAll(userId, listId int) ([]posCreditation.TodoItem, error) {
+	var items []posCreditation.TodoItem
 	query := fmt.Sprintf("SELECT ti.id, ti.title, ti.description, ti.done FROM %s ti "+
 		"INNER JOIN %s li on li.item_id = ti.id INNER JOIN %s ul on ul.list_id = li.lists_id WHERE li.lists_id = $1 AND ul.user_id = $2",
 		todoItemsTable, listsItemsTable, usersListsTable)
@@ -53,8 +53,8 @@ func (itemPostgres *TodoItemPostgres) GetAll(userId, listId int) ([]todo.TodoIte
 	return items, nil
 }
 
-func (itemPostgres *TodoItemPostgres) GetById(userId, itemId int) (todo.TodoItem, error) {
-	var item todo.TodoItem
+func (itemPostgres *TodoItemPostgres) GetById(userId, itemId int) (posCreditation.TodoItem, error) {
+	var item posCreditation.TodoItem
 	query := fmt.Sprintf("SELECT ti.id, ti.title, ti.description, ti.done FROM %s ti "+
 		"INNER JOIN %s li on li.item_id = ti.id INNER JOIN %s ul on ul.list_id = li.lists_id WHERE ti.id = $1 AND ul.user_id = $2",
 		todoItemsTable, listsItemsTable, usersListsTable)
@@ -64,7 +64,7 @@ func (itemPostgres *TodoItemPostgres) GetById(userId, itemId int) (todo.TodoItem
 	return item, nil
 }
 
-func (itemPostgres *TodoItemPostgres) UpdateById(userId, itemId int, input todo.UpdateItemInput) error {
+func (itemPostgres *TodoItemPostgres) UpdateById(userId, itemId int, input posCreditation.UpdateMarketPlaceInput) error {
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 	argId := 1
@@ -72,16 +72,6 @@ func (itemPostgres *TodoItemPostgres) UpdateById(userId, itemId int, input todo.
 	if input.Title != nil {
 		setValues = append(setValues, fmt.Sprintf("title=$%d", argId))
 		args = append(args, *input.Title)
-		argId++
-	}
-	if input.Description != nil {
-		setValues = append(setValues, fmt.Sprintf("description=$%d", argId))
-		args = append(args, *input.Description)
-		argId++
-	}
-	if input.Done != nil {
-		setValues = append(setValues, fmt.Sprintf("done=$%d", argId))
-		args = append(args, *input.Done)
 		argId++
 	}
 
