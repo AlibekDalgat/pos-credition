@@ -17,21 +17,21 @@ func (shopService *TodoShopService) Create(list posCreditation.TodoShop) (string
 	return shopService.repo.Create(list)
 }
 
-func (shopService *TodoShopService) GetAll(userId int) ([]posCreditation.TodoShop, error) {
-	return shopService.repo.GetAll(userId)
+func (shopService *TodoShopService) GetAll() ([]posCreditation.TodoShop, error) {
+	return shopService.repo.GetAll()
 }
 
 func (shopService *TodoShopService) GetById(userId, id int) (posCreditation.TodoShop, error) {
 	return shopService.repo.GetById(userId, id)
 }
 
-func (shopService *TodoShopService) DeleteById(userId, id int) error {
-	return shopService.repo.DeleteById(userId, id)
+func (shopService *TodoShopService) DeleteById(id string) error {
+	return shopService.repo.DeleteById(id)
 }
 
-func (shopService *TodoShopService) UpdateById(userId, id int, input posCreditation.UpdateShopInput) error {
+func (shopService *TodoShopService) UpdateById(id string, input posCreditation.UpdateShopInput) error {
 	if err := input.Validate(); err != nil {
 		return err
 	}
-	return shopService.repo.UpdateById(userId, id, input)
+	return shopService.repo.UpdateById(id, input)
 }

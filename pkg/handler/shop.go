@@ -8,7 +8,7 @@ import (
 )
 
 func (h *Handler) createShop(c *gin.Context) {
-	if ok := checkRole(c); ok {
+	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
 	}
 	var input posCreditation.TodoShop
@@ -30,13 +30,12 @@ type getAllShopsResponse struct {
 	Data []posCreditation.TodoShop `json:"data"`
 }
 
-func (h *Handler) getAllLists(c *gin.Context) {
-	userId, err := getUserId(c)
-	if err != nil {
-		return
+func (h *Handler) getAllShops(c *gin.Context) {
+	if ok := checkRole(c); !ok {
+		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
 	}
 
-	lists, err := h.services.TodoShop.GetAll(userId)
+	lists, err := h.services.TodoShop.GetAll()
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -68,25 +67,19 @@ func (h *Handler) getListById(c *gin.Context) {
 	c.JSON(http.StatusOK, list)
 }
 
-func (h *Handler) updateList(c *gin.Context) {
-	userId, err := getUserId(c)
-	if err != nil {
-		return
+func (h *Handler) updateShop(c *gin.Context) {
+	if ok := checkRole(c); !ok {
+		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
 	}
 
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "tüzsüz id param")
-		return
-	}
-
+	id := c.Param("id")
 	var input posCreditation.UpdateShopInput
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	if err := h.services.TodoShop.UpdateById(userId, id, input); err != nil {
+	if err := h.services.TodoShop.UpdateById(id, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -95,19 +88,14 @@ func (h *Handler) updateList(c *gin.Context) {
 		Status: "ok",
 	})
 }
-func (h *Handler) deleteList(c *gin.Context) {
-	userId, err := getUserId(c)
-	if err != nil {
-		return
+func (h *Handler) deleteShop(c *gin.Context) {
+	if ok := checkRole(c); !ok {
+		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
 	}
 
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "tüzsüz id param")
-		return
-	}
+	id := c.Param("id")
 
-	err = h.services.TodoShop.DeleteById(userId, id)
+	err := h.services.TodoShop.DeleteById(id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

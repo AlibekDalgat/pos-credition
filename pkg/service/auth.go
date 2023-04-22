@@ -22,7 +22,8 @@ type AuthService struct {
 
 type tokenClaims struct {
 	jwt.StandardClaims
-	UserId string `json:"user_id"`
+	UserId  string `json:"user_id"`
+	IsAdmin bool   `json:"isAdmin"`
 }
 
 func NewAuthService(repo repository.Authorization) *AuthService {
@@ -34,8 +35,8 @@ func (s *AuthService) CreateUser(user posCreditation.User) (int, error) {
 	return s.repo.CreateUser(user)
 }
 
-func (s *AuthService) GenerateToken(username, password string) (string, error) {
-	user, err := s.repo.GetUser(username, generatePassword(password))
+func (s *AuthService) GenerateTokenForAgent(login, password string) (string, error) {
+	user, err := s.repo.GetUser(login, generatePassword(password))
 	if err != nil {
 		return "", err
 	}
@@ -45,12 +46,24 @@ func (s *AuthService) GenerateToken(username, password string) (string, error) {
 			IssuedAt:  time.Now().Unix(),
 		},
 		user.Id,
+		false,
 	})
 
 	return token.SignedString([]byte(signingKey))
 }
+func (s *AuthService) GenerateTokenForAdmin() (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+		"0",
+		true,
+	})
+	return token.SignedString([]byte(signingKey))
+}
 
-func (s *AuthService) ParseToken(accessToken string) (string, error) {
+func (s *AuthService) ParseToken(accessToken string) (string, bool, error) {
 	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("tüzsüz signing method")
@@ -58,15 +71,15 @@ func (s *AuthService) ParseToken(accessToken string) (string, error) {
 		return []byte(signingKey), nil
 	})
 	if err != nil {
-		return "-", err
+		return "-", false, err
 	}
 
 	claims, ok := token.Claims.(*tokenClaims)
 	if !ok {
-		return "-", errors.New("token claims'leri *tokenClaims örnegi bolup tügüldür")
+		return "-", false, errors.New("token claims'leri *tokenClaims örnegi bolup tügüldür")
 	}
 
-	return claims.UserId, nil
+	return claims.UserId, claims.IsAdmin, nil
 }
 
 func generatePassword(password string) string {

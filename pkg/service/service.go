@@ -7,16 +7,17 @@ import (
 
 type Authorization interface {
 	CreateUser(user posCreditation.User) (int, error)
-	GenerateToken(username, password string) (string, error)
-	ParseToken(token string) (string, error)
+	GenerateTokenForAgent(login, password string) (string, error)
+	GenerateTokenForAdmin() (string, error)
+	ParseToken(token string) (string, bool, error)
 }
 
 type TodoShop interface {
 	Create(shop posCreditation.TodoShop) (string, error)
-	GetAll(userId int) ([]posCreditation.TodoShop, error)
+	GetAll() ([]posCreditation.TodoShop, error)
 	GetById(userId, id int) (list posCreditation.TodoShop, err error)
-	UpdateById(userId, id int, input posCreditation.UpdateShopInput) error
-	DeleteById(userId, id int) error
+	UpdateById(id string, input posCreditation.UpdateShopInput) error
+	DeleteById(id string) error
 }
 
 type TodoItem interface {

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"net/http"
@@ -14,12 +15,12 @@ const (
 	isAdmin             = "isAdmin"
 )
 
-func (h *Handler) roling(c *gin.Context) {
+func (h *Handler) roling(c *gin.Context, input signInInput) {
 	login := viper.GetString("admin.login")
 	password := viper.GetString("admin.password")
-	now_login, _ := c.Get("login")
-	now_password, _ := c.Get("password")
-	if login == now_login.(string) && password == now_password.(string) {
+	now_login := input.Login
+	now_password := input.Password
+	if login == now_login && password == now_password {
 		c.Set(isAdmin, true)
 	} else {
 		c.Set(isAdmin, false)
@@ -39,13 +40,17 @@ func (h *Handler) userIdentity(c *gin.Context) {
 		return
 	}
 
-	userId, err := h.services.Authorization.ParseToken(headerParts[1])
+	userId, checkAccess, err := h.services.Authorization.ParseToken(headerParts[1])
 	if err != nil {
 		newErrorResponse(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
 	c.Set(userCtx, userId)
+	c.Set(isAdmin, checkAccess)
+
+	is, _ := c.Get("isAdmin")
+	fmt.Println("isamiiiiiiiiiiiiiiiiiiiiiiiiiin: ", is)
 }
 
 func getUserId(c *gin.Context) (int, error) {
@@ -65,6 +70,7 @@ func getUserId(c *gin.Context) (int, error) {
 
 func checkRole(c *gin.Context) bool {
 	flag, _ := c.Get(isAdmin)
+	fmt.Println("flaggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg: ", flag)
 	if flag.(bool) {
 		return true
 	} else {

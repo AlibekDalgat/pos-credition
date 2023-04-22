@@ -18,6 +18,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	auth := router.Group("/auth")
 	{
 		auth.POST("/sign-in", h.signIn)
+
 	}
 	api := router.Group("/api", h.userIdentity)
 	{
@@ -25,10 +26,10 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			shops := admin.Group("/shops")
 			{
-				shops.PUT("/", h.createShop)
-				//shops.GET("/", h.getAllShops)
-				//shops.PUT("/:id", h.updateShop)
-				//shops.POST("/:id", h.deleteShop)
+				shops.POST("/", h.createShop)
+				shops.GET("/", h.getAllShops)
+				shops.PUT("/:id", h.updateShop)
+				shops.POST("/:id", h.deleteShop)
 			}
 
 			/*
@@ -60,7 +61,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			}
 
 		*/
-	}
 
+	}
 	return router
 }

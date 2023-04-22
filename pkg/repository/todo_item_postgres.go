@@ -46,7 +46,7 @@ func (itemPostgres *TodoItemPostgres) GetAll(userId, listId int) ([]posCreditati
 	var items []posCreditation.TodoItem
 	query := fmt.Sprintf("SELECT ti.id, ti.title, ti.description, ti.done FROM %s ti "+
 		"INNER JOIN %s li on li.item_id = ti.id INNER JOIN %s ul on ul.list_id = li.lists_id WHERE li.lists_id = $1 AND ul.user_id = $2",
-		todoItemsTable, listsItemsTable, usersListsTable)
+		todoItemsTable, listsItemsTable, shopsMarketPlaces)
 	if err := itemPostgres.db.Select(&items, query, listId, userId); err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (itemPostgres *TodoItemPostgres) GetById(userId, itemId int) (posCreditatio
 	var item posCreditation.TodoItem
 	query := fmt.Sprintf("SELECT ti.id, ti.title, ti.description, ti.done FROM %s ti "+
 		"INNER JOIN %s li on li.item_id = ti.id INNER JOIN %s ul on ul.list_id = li.lists_id WHERE ti.id = $1 AND ul.user_id = $2",
-		todoItemsTable, listsItemsTable, usersListsTable)
+		todoItemsTable, listsItemsTable, shopsMarketPlaces)
 	if err := itemPostgres.db.Get(&item, query, itemId, userId); err != nil {
 		return item, err
 	}
@@ -77,7 +77,7 @@ func (itemPostgres *TodoItemPostgres) UpdateById(userId, itemId int, input posCr
 
 	setQuery := strings.Join(setValues, ", ")
 	query := fmt.Sprintf("UPDATE %s ti SET %s FROM %s li, %s ul WHERE ti.id = li.item_id AND li.lists_id = ul.list_id AND ti.id=$%d AND ul.user_id=$%d",
-		todoItemsTable, setQuery, listsItemsTable, usersListsTable, argId, argId+1)
+		todoItemsTable, setQuery, listsItemsTable, shopsMarketPlaces, argId, argId+1)
 	args = append(args, itemId, userId)
 
 	logrus.Debugf("updateQuery: %s", query)
@@ -89,7 +89,7 @@ func (itemPostgres *TodoItemPostgres) UpdateById(userId, itemId int, input posCr
 func (itemPostgres *TodoItemPostgres) DeleteById(userId, itemId int) error {
 	query := fmt.Sprintf("DELETE FROM %s ti USING %s li, %s ul "+
 		"WHERE ti.id = li.item_id AND li.lists_id = ul.list_id AND ul.user_id = $1 AND ti.id = $2",
-		todoItemsTable, listsItemsTable, usersListsTable)
+		todoItemsTable, listsItemsTable, shopsMarketPlaces)
 	_, err := itemPostgres.db.Exec(query, userId, itemId)
 	return err
 }

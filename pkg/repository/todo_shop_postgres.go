@@ -5,7 +5,6 @@ import (
 	"github.com/AlibekDalgat/pos-credition"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
-	"strings"
 )
 
 type TodoShopPostgres struct {
@@ -26,44 +25,35 @@ func (shopPostgres *TodoShopPostgres) Create(shop posCreditation.TodoShop) (stri
 	return id, nil
 }
 
-func (shopPostgres *TodoShopPostgres) GetAll(userId int) ([]posCreditation.TodoShop, error) {
+func (shopPostgres *TodoShopPostgres) GetAll() ([]posCreditation.TodoShop, error) {
 	var lists []posCreditation.TodoShop
-	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description FROM %s tl INNER JOIN %s ul on tl.id = ul.list_id WHERE ul.user_id = $1", shopTable, usersListsTable)
-	err := shopPostgres.db.Select(&lists, query, userId)
+	query := fmt.Sprintf("SELECT shps.id, shps.title FROM %s shps", shopTable)
+	err := shopPostgres.db.Select(&lists, query)
 	return lists, err
 }
 
 func (shopPostgres *TodoShopPostgres) GetById(userId, id int) (posCreditation.TodoShop, error) {
 	var list posCreditation.TodoShop
-	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description FROM %s tl INNER JOIN %s ul on tl.id = ul.list_id WHERE ul.user_id = $1 AND ul.list_id = $2", shopTable, usersListsTable)
+	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description FROM %s tl INNER JOIN %s ul on tl.id = ul.list_id WHERE ul.user_id = $1 AND ul.list_id = $2", shopTable, shopsMarketPlaces)
 	err := shopPostgres.db.Get(&list, query, userId, id)
 	return list, err
 }
 
-func (shopPostgres *TodoShopPostgres) DeleteById(userId, id int) error {
-	query := fmt.Sprintf("DELETE FROM %s tl USING %s ul WHERE tl.id = ul.list_id AND ul.user_id = $1 AND ul.list_id = $2", shopTable, usersListsTable)
-	_, err := shopPostgres.db.Exec(query, userId, id)
+func (shopPostgres *TodoShopPostgres) DeleteById(id string) error {
+	query := fmt.Sprintf("DELETE FROM %s shps WHERE shps.id = '%s'",
+		shopTable, id)
+	fmt.Println("queeeeeeeeeeeeeeeeeeeeeeeeeeeeery: ", query)
+	_, err := shopPostgres.db.Exec(query)
 	return err
 }
 
-func (shopPostgres *TodoShopPostgres) UpdateById(userId, id int, input posCreditation.UpdateShopInput) error {
-	setValues := make([]string, 0)
-	args := make([]interface{}, 0)
-	argId := 1
-
-	if input.Title != nil {
-		setValues = append(setValues, fmt.Sprintf("title=$%d", argId))
-		args = append(args, *input.Title)
-		argId++
-	}
-
-	setQuery := strings.Join(setValues, ", ")
-	query := fmt.Sprintf("UPDATE %s tl SET %s FROM %s ul WHERE tl.id = ul.list_id AND ul.list_id=$%d AND ul.user_id=$%d",
-		shopTable, setQuery, usersListsTable, argId, argId+1)
-	args = append(args, id, userId)
+func (shopPostgres *TodoShopPostgres) UpdateById(id string, input posCreditation.UpdateShopInput) error {
+	inputTitle := *input.Title
+	query := fmt.Sprintf("UPDATE %s shps SET title='%s' WHERE id='%s'",
+		shopTable, inputTitle, id)
 
 	logrus.Debugf("updateQuery: %s", query)
-	logrus.Debugf("args: %s	", args)
-	_, err := shopPostgres.db.Exec(query, args...)
+	logrus.Debugf("args: %s	", input.Title)
+	_, err := shopPostgres.db.Exec(query)
 	return err
 }
