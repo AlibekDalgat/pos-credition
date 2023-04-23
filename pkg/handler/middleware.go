@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"net/http"
@@ -49,8 +48,8 @@ func (h *Handler) userIdentity(c *gin.Context) {
 	c.Set(userCtx, userId)
 	c.Set(isAdmin, checkAccess)
 
-	is, _ := c.Get("isAdmin")
-	fmt.Println("isamiiiiiiiiiiiiiiiiiiiiiiiiiin: ", is)
+	//is, _ := c.Get("isAdmin")
+	//fmt.Println("isamiiiiiiiiiiiiiiiiiiiiiiiiiin: ", is)
 }
 
 func getUserId(c *gin.Context) (int, error) {
@@ -70,7 +69,7 @@ func getUserId(c *gin.Context) (int, error) {
 
 func checkRole(c *gin.Context) bool {
 	flag, _ := c.Get(isAdmin)
-	fmt.Println("flaggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg: ", flag)
+	//fmt.Println("flaggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg: ", flag)
 	if flag.(bool) {
 		return true
 	} else {

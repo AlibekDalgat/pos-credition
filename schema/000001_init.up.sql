@@ -14,7 +14,8 @@ CREATE TABLE shops
 CREATE TABLE market_places
 (
     id varchar(255) not null unique,
-    title varchar(255) not null
+    title varchar(255) not null,
+    shop_id varchar(255) references shops (id) on delete cascade not null
 );
 
 CREATE TABLE credits
@@ -25,13 +26,6 @@ CREATE TABLE credits
     timelimit varchar(255) not null,
     agent_id varchar(255) references agents (id)  on delete cascade not null,
     m_place_id varchar(255) references market_places (id) on delete cascade not null
-);
-
-CREATE TABLE market_places_shops
-(
-    id serial not null unique,
-    m_place_id varchar(255) references market_places (id)  on delete cascade not null,
-    shop_id varchar(255) references shops (id) on delete cascade not null
 );
 
 CREATE TABLE agents_market_places

@@ -12,11 +12,10 @@ type UsersList struct {
 	UserId int
 	ListId int
 }
-type TodoItem struct {
-	Id          int    `json:"id" db:"id"`
-	Title       string `json:"title" db:"title" binding:"required"`
-	Description string `json:"description" db:"description"`
-	Done        bool   `json:"done" db:"done"`
+type TodoMarketPlace struct {
+	Id     string `json:"id" db:"id"`
+	Title  string `json:"title" db:"title" binding:"required"`
+	ShopId string `json:"shop_id" db:"shop_id" binding:"required"`
 }
 
 type ListsItem struct {

@@ -13,28 +13,28 @@ type Authorization interface {
 type TodoShop interface {
 	Create(shop posCreditation.TodoShop) (string, error)
 	GetAll() ([]posCreditation.TodoShop, error)
-	GetById(userId, id int) (list posCreditation.TodoShop, err error)
+	GetById(id string) (list posCreditation.TodoShop, err error)
 	UpdateById(id string, input posCreditation.UpdateShopInput) error
 	DeleteById(id string) error
 }
 
-type TodoItem interface {
-	Create(listId int, item posCreditation.TodoItem) (int, error)
-	GetAll(userId, listId int) ([]posCreditation.TodoItem, error)
-	GetById(userId, itemId int) (posCreditation.TodoItem, error)
-	UpdateById(userId, itemId int, input posCreditation.UpdateMarketPlaceInput) error
-	DeleteById(userId, itemId int) error
+type TodoMarketPlace interface {
+	Create(marketPlace posCreditation.TodoMarketPlace) (string, error)
+	GetAll() ([]posCreditation.TodoMarketPlace, error)
+	GetById(marketPlaceId string) (posCreditation.TodoMarketPlace, error)
+	UpdateById(marketPlaceId string, input posCreditation.UpdateMarketPlaceInput) error
+	DeleteById(marketPlaceId string) error
 }
 
 type Repository struct {
 	Authorization
 	TodoShop
-	TodoItem
+	TodoMarketPlace
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
-		TodoShop: NewTodoShopPostgres(db),
-		TodoItem: NewTodoItemPostgres(db),
+		TodoShop:        NewTodoShopPostgres(db),
+		TodoMarketPlace: NewTodoMarketPlacePostgres(db),
 	}
 }

@@ -6,17 +6,19 @@ import (
 	"net/http"
 )
 
-func (h *Handler) createShop(c *gin.Context) {
+func (h *Handler) createMarketPlace(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
 	}
-	var input posCreditation.TodoShop
+
+	var input posCreditation.TodoMarketPlace
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
 	}
-	id, err := h.services.TodoShop.Create(input)
+	id, err := h.services.TodoMarketPlace.Create(input)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -25,71 +27,69 @@ func (h *Handler) createShop(c *gin.Context) {
 	})
 }
 
-type getAllShopsResponse struct {
-	Data []posCreditation.TodoShop `json:"data"`
+type getAllItemsResponse struct {
+	Data []posCreditation.TodoMarketPlace `json:"data"`
 }
 
-func (h *Handler) getAllShops(c *gin.Context) {
+func (h *Handler) getAllMarketPlaces(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
 	}
 
-	lists, err := h.services.TodoShop.GetAll()
+	marketPlaces, err := h.services.TodoMarketPlace.GetAll()
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
 	}
 
-	c.JSON(http.StatusOK, getAllShopsResponse{
-		Data: lists,
+	c.JSON(http.StatusOK, getAllItemsResponse{
+		Data: marketPlaces,
 	})
 }
 
-func (h *Handler) getShopById(c *gin.Context) {
+func (h *Handler) getMarketPlaceById(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
 	}
 
-	id := c.Param("id")
+	marketPlaceId := c.Param("id")
 
-	list, err := h.services.TodoShop.GetById(id)
+	item, err := h.services.TodoMarketPlace.GetById(marketPlaceId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
 	}
 
-	c.JSON(http.StatusOK, list)
+	c.JSON(http.StatusOK, item)
 }
 
-func (h *Handler) updateShop(c *gin.Context) {
+func (h *Handler) updateMarketPlace(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
 	}
 
-	id := c.Param("id")
-	var input posCreditation.UpdateShopInput
+	marketPlaceId := c.Param("id")
+
+	var input posCreditation.UpdateMarketPlaceInput
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	if err := h.services.TodoShop.UpdateById(id, input); err != nil {
+	if err := h.services.TodoMarketPlace.UpdateById(marketPlaceId, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
 	}
 
 	c.JSON(http.StatusOK, statusResponse{
 		Status: "ok",
 	})
 }
-func (h *Handler) deleteShop(c *gin.Context) {
+func (h *Handler) deleteMarketPlace(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
 	}
 
 	id := c.Param("id")
 
-	err := h.services.TodoShop.DeleteById(id)
+	err := h.services.TodoMarketPlace.DeleteById(id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

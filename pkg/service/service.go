@@ -15,29 +15,29 @@ type Authorization interface {
 type TodoShop interface {
 	Create(shop posCreditation.TodoShop) (string, error)
 	GetAll() ([]posCreditation.TodoShop, error)
-	GetById(userId, id int) (list posCreditation.TodoShop, err error)
+	GetById(id string) (list posCreditation.TodoShop, err error)
 	UpdateById(id string, input posCreditation.UpdateShopInput) error
 	DeleteById(id string) error
 }
 
-type TodoItem interface {
-	Create(userId, listId int, item posCreditation.TodoItem) (int, error)
-	GetAll(userId, listId int) ([]posCreditation.TodoItem, error)
-	GetById(userId, itemId int) (posCreditation.TodoItem, error)
-	UpdateById(userId, itemId int, input posCreditation.UpdateMarketPlaceInput) error
-	DeleteById(userId, id int) error
+type TodoMarketPlace interface {
+	Create(marketPlace posCreditation.TodoMarketPlace) (string, error)
+	GetAll() ([]posCreditation.TodoMarketPlace, error)
+	GetById(marketPlaceId string) (posCreditation.TodoMarketPlace, error)
+	UpdateById(marketPlaceId string, input posCreditation.UpdateMarketPlaceInput) error
+	DeleteById(id string) error
 }
 
 type Service struct {
 	Authorization
 	TodoShop
-	TodoItem
+	TodoMarketPlace
 }
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
-		Authorization: NewAuthService(repos.Authorization),
-		TodoShop:      NewTodoShopService(repos.TodoShop),
-		TodoItem:      NewTodoItemService(repos.TodoItem, repos.TodoShop),
+		Authorization:   NewAuthService(repos.Authorization),
+		TodoShop:        NewTodoShopService(repos.TodoShop),
+		TodoMarketPlace: NewTodoMarketPlaceService(repos.TodoMarketPlace),
 	}
 }

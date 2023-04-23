@@ -28,19 +28,21 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			{
 				shops.POST("/", h.createShop)
 				shops.GET("/", h.getAllShops)
+				shops.GET("/:id", h.getShopById)
 				shops.PUT("/:id", h.updateShop)
 				shops.POST("/:id", h.deleteShop)
 			}
 
-			/*
-				market_places := admin.Group("/market_places")
-				{
-					market_places.PUT("/", h.createMark_place)
-					market_places.GET("/", h.getAllMark_place)
-					//market_places.PUT("/:id", h.updateMark_place)
-					//market_places.POST("/:id", h.deleteMark_place)
-				}
+			market_places := admin.Group("/market_places")
+			{
+				market_places.POST("/", h.createMarketPlace)
+				market_places.GET("/", h.getAllMarketPlaces)
+				market_places.GET("/:id", h.getMarketPlaceById)
+				market_places.PUT("/:id", h.updateMarketPlace)
+				market_places.POST("/:id", h.deleteMarketPlace)
+			}
 
+			/*
 				agents := admin.Group("/agents")
 				{
 					market_places.PUT("/", h.createAgent)
@@ -49,7 +51,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 					market_places.POST("/:id", h.deleteAgent)
 				}
 
+
 			*/
+
 		}
 
 		/*

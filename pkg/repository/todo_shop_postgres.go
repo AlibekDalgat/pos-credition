@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 	"github.com/AlibekDalgat/pos-credition"
 	"github.com/jmoiron/sqlx"
@@ -32,18 +33,21 @@ func (shopPostgres *TodoShopPostgres) GetAll() ([]posCreditation.TodoShop, error
 	return lists, err
 }
 
-func (shopPostgres *TodoShopPostgres) GetById(userId, id int) (posCreditation.TodoShop, error) {
+func (shopPostgres *TodoShopPostgres) GetById(id string) (posCreditation.TodoShop, error) {
 	var list posCreditation.TodoShop
-	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description FROM %s tl INNER JOIN %s ul on tl.id = ul.list_id WHERE ul.user_id = $1 AND ul.list_id = $2", shopTable, shopsMarketPlaces)
-	err := shopPostgres.db.Get(&list, query, userId, id)
+	query := fmt.Sprintf("SELECT shps.id, shps.title FROM %s shps WHERE id='%s' ", shopTable, id)
+	err := shopPostgres.db.Get(&list, query)
 	return list, err
 }
 
 func (shopPostgres *TodoShopPostgres) DeleteById(id string) error {
 	query := fmt.Sprintf("DELETE FROM %s shps WHERE shps.id = '%s'",
 		shopTable, id)
-	fmt.Println("queeeeeeeeeeeeeeeeeeeeeeeeeeeeery: ", query)
-	_, err := shopPostgres.db.Exec(query)
+	res, err := shopPostgres.db.Exec(query)
+	rowsDeleted, err := res.RowsAffected()
+	if rowsDeleted == 0 {
+		err = errors.New("нет такойторговой точки")
+	}
 	return err
 }
 

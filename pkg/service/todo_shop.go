@@ -21,8 +21,8 @@ func (shopService *TodoShopService) GetAll() ([]posCreditation.TodoShop, error) 
 	return shopService.repo.GetAll()
 }
 
-func (shopService *TodoShopService) GetById(userId, id int) (posCreditation.TodoShop, error) {
-	return shopService.repo.GetById(userId, id)
+func (shopService *TodoShopService) GetById(id string) (posCreditation.TodoShop, error) {
+	return shopService.repo.GetById(id)
 }
 
 func (shopService *TodoShopService) DeleteById(id string) error {
