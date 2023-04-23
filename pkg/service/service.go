@@ -28,10 +28,20 @@ type TodoMarketPlace interface {
 	DeleteById(id string) error
 }
 
+type TodoAgent interface {
+	Create(agent posCreditation.TodoAgent) (string, error)
+	GetAll() ([]posCreditation.TodoAgent, error)
+	GetById(agentId string) (posCreditation.TodoAgent, error)
+	UpdateById(agentId string, input posCreditation.UpdateAgentInput) error
+	DeleteById(id string) error
+	NewAccessToMP(marketPlace posCreditation.AccessingToMP, id string) (int, error)
+}
+
 type Service struct {
 	Authorization
 	TodoShop
 	TodoMarketPlace
+	TodoAgent
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -39,5 +49,6 @@ func NewService(repos *repository.Repository) *Service {
 		Authorization:   NewAuthService(repos.Authorization),
 		TodoShop:        NewTodoShopService(repos.TodoShop),
 		TodoMarketPlace: NewTodoMarketPlaceService(repos.TodoMarketPlace),
+		TodoAgent:       NewTodoAgentService(repos.TodoAgent),
 	}
 }

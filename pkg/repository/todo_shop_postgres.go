@@ -46,7 +46,7 @@ func (shopPostgres *TodoShopPostgres) DeleteById(id string) error {
 	res, err := shopPostgres.db.Exec(query)
 	rowsDeleted, err := res.RowsAffected()
 	if rowsDeleted == 0 {
-		err = errors.New("нет такойторговой точки")
+		err = errors.New("нет такой магазина")
 	}
 	return err
 }

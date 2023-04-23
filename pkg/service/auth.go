@@ -7,6 +7,7 @@ import (
 	"github.com/AlibekDalgat/pos-credition"
 	"github.com/AlibekDalgat/pos-credition/pkg/repository"
 	"github.com/golang-jwt/jwt"
+	"github.com/spf13/viper"
 	"time"
 )
 
@@ -57,7 +58,7 @@ func (s *AuthService) GenerateTokenForAdmin() (string, error) {
 			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
-		"0",
+		viper.GetString("admin.login"),
 		true,
 	})
 	return token.SignedString([]byte(signingKey))
@@ -75,10 +76,9 @@ func (s *AuthService) ParseToken(accessToken string) (string, bool, error) {
 	}
 
 	claims, ok := token.Claims.(*tokenClaims)
-	if !ok {
+	if !ok && token.Valid {
 		return "-", false, errors.New("token claims'leri *tokenClaims örnegi bolup tügüldür")
 	}
-
 	return claims.UserId, claims.IsAdmin, nil
 }
 

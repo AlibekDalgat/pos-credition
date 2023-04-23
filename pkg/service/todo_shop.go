@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"github.com/AlibekDalgat/pos-credition"
 	"github.com/AlibekDalgat/pos-credition/pkg/repository"
 )
@@ -13,8 +14,11 @@ func NewTodoShopService(repo repository.TodoShop) *TodoShopService {
 	return &TodoShopService{repo}
 }
 
-func (shopService *TodoShopService) Create(list posCreditation.TodoShop) (string, error) {
-	return shopService.repo.Create(list)
+func (shopService *TodoShopService) Create(shop posCreditation.TodoShop) (string, error) {
+	if shop.Id == "" {
+		return "", errors.New("не введён id")
+	}
+	return shopService.repo.Create(shop)
 }
 
 func (shopService *TodoShopService) GetAll() ([]posCreditation.TodoShop, error) {

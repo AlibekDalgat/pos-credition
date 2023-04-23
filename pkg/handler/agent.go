@@ -1,24 +1,22 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/AlibekDalgat/pos-credition"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func (h *Handler) createMarketPlace(c *gin.Context) {
+func (h *Handler) createAgent(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
 	}
 
-	var input posCreditation.TodoMarketPlace
+	var input posCreditation.TodoAgent
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-	fmt.Println("зашёл в хендлер")
-	id, err := h.services.TodoMarketPlace.Create(input)
+	id, err := h.services.TodoAgent.Create(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -29,33 +27,33 @@ func (h *Handler) createMarketPlace(c *gin.Context) {
 	})
 }
 
-type getAllMarketPlacesResponse struct {
-	Data []posCreditation.TodoMarketPlace `json:"data"`
+type getAllAgentsResponse struct {
+	Data []posCreditation.TodoAgent `json:"data"`
 }
 
-func (h *Handler) getAllMarketPlaces(c *gin.Context) {
+func (h *Handler) getAllAgents(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
 	}
 
-	marketPlaces, err := h.services.TodoMarketPlace.GetAll()
+	agents, err := h.services.TodoAgent.GetAll()
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 	}
 
-	c.JSON(http.StatusOK, getAllMarketPlacesResponse{
-		Data: marketPlaces,
+	c.JSON(http.StatusOK, getAllAgentsResponse{
+		Data: agents,
 	})
 }
 
-func (h *Handler) getMarketPlaceById(c *gin.Context) {
+func (h *Handler) getAgentById(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
 	}
 
-	marketPlaceId := c.Param("id")
+	agent := c.Param("id")
 
-	item, err := h.services.TodoMarketPlace.GetById(marketPlaceId)
+	item, err := h.services.TodoAgent.GetById(agent)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 	}
@@ -63,20 +61,20 @@ func (h *Handler) getMarketPlaceById(c *gin.Context) {
 	c.JSON(http.StatusOK, item)
 }
 
-func (h *Handler) updateMarketPlace(c *gin.Context) {
+func (h *Handler) updateAgent(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
 	}
 
-	marketPlaceId := c.Param("id")
+	agentId := c.Param("id")
 
-	var input posCreditation.UpdateMarketPlaceInput
+	var input posCreditation.UpdateAgentInput
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	if err := h.services.TodoMarketPlace.UpdateById(marketPlaceId, input); err != nil {
+	if err := h.services.TodoAgent.UpdateById(agentId, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 	}
 
@@ -84,14 +82,14 @@ func (h *Handler) updateMarketPlace(c *gin.Context) {
 		Status: "ok",
 	})
 }
-func (h *Handler) deleteMarketPlace(c *gin.Context) {
+func (h *Handler) deleteAgent(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
 	}
 
 	id := c.Param("id")
 
-	err := h.services.TodoMarketPlace.DeleteById(id)
+	err := h.services.TodoAgent.DeleteById(id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -99,5 +97,28 @@ func (h *Handler) deleteMarketPlace(c *gin.Context) {
 
 	c.JSON(http.StatusOK, statusResponse{
 		Status: "ok",
+	})
+}
+
+func (h *Handler) newAccess(c *gin.Context) {
+	if ok := checkRole(c); !ok {
+		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
+	}
+
+	agentId := c.Param("id")
+	var input posCreditation.AccessingToMP
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	id, err := h.services.TodoAgent.NewAccessToMP(input, agentId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"id": id,
 	})
 }

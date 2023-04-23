@@ -26,15 +26,26 @@ type TodoMarketPlace interface {
 	DeleteById(marketPlaceId string) error
 }
 
+type TodoAgent interface {
+	Create(agent posCreditation.TodoAgent) (string, error)
+	GetAll() ([]posCreditation.TodoAgent, error)
+	GetById(agentId string) (posCreditation.TodoAgent, error)
+	UpdateById(agentId string, input posCreditation.UpdateAgentInput) error
+	DeleteById(id string) error
+	NewAccessToMP(marketPlace posCreditation.AccessingToMP, id string) (int, error)
+}
+
 type Repository struct {
 	Authorization
 	TodoShop
 	TodoMarketPlace
+	TodoAgent
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		TodoShop:        NewTodoShopPostgres(db),
 		TodoMarketPlace: NewTodoMarketPlacePostgres(db),
+		TodoAgent:       NewTodoAgentPostgres(db),
 	}
 }

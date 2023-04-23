@@ -17,6 +17,7 @@ func NewTodoMarketPlacePostgres(db *sqlx.DB) *TodoItemPostgres {
 }
 
 func (marketPlacePostgres *TodoItemPostgres) Create(marketPlace posCreditation.TodoMarketPlace) (string, error) {
+	fmt.Println("зашёл в постгрес")
 	var id string
 	query := fmt.Sprintf("INSERT INTO %s (id, title, shop_id) values ($1, $2, $3) RETURNING id", marketPlacesTable)
 	row := marketPlacePostgres.db.QueryRow(query, marketPlace.Id, marketPlace.Title, marketPlace.ShopId)
@@ -37,13 +38,13 @@ func (marketPlacePostgres *TodoItemPostgres) GetAll() ([]posCreditation.TodoMark
 }
 
 func (marketPlacePostgres *TodoItemPostgres) GetById(markePlaceId string) (posCreditation.TodoMarketPlace, error) {
-	var item posCreditation.TodoMarketPlace
+	var marketPlace posCreditation.TodoMarketPlace
 	query := fmt.Sprintf("SELECT mp.id, mp.title, mp.shop_id FROM %s mp WHERE mp.id = '%s'",
 		marketPlacesTable, markePlaceId)
-	if err := marketPlacePostgres.db.Get(&item, query); err != nil {
-		return item, err
+	if err := marketPlacePostgres.db.Get(&marketPlace, query); err != nil {
+		return marketPlace, err
 	}
-	return item, nil
+	return marketPlace, nil
 }
 
 func (marketPlacePostgres *TodoItemPostgres) UpdateById(marketPlaceId string, input posCreditation.UpdateMarketPlaceInput) error {
@@ -53,11 +54,7 @@ func (marketPlacePostgres *TodoItemPostgres) UpdateById(marketPlaceId string, in
 
 	logrus.Debugf("updateQuery: %s", query)
 	logrus.Debugf("args: %s	", inputTitle)
-	res, err := marketPlacePostgres.db.Exec(query)
-	rowsDeleted, err := res.RowsAffected()
-	if rowsDeleted == 0 {
-		err = errors.New("нет такой торговой точки")
-	}
+	_, err := marketPlacePostgres.db.Exec(query)
 	return err
 }
 

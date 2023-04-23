@@ -4,6 +4,6 @@ DROP TABLE credits;
 
 DROP TABLE agents;
 
-DROP TABLE shops;
-
 DROP TABLE market_places;
+
+DROP TABLE shops;

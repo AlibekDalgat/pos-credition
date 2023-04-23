@@ -6,11 +6,11 @@ import (
 )
 
 const (
-	usersTable        = "users"
-	shopTable         = "shops"
-	marketPlacesTable = "market_places"
-
-	listsItemsTable = "lists_items"
+	usersTable               = "users"
+	shopTable                = "shops"
+	marketPlacesTable        = "market_places"
+	agentsTable              = "agents"
+	agentsMarketsPlacesTable = "agents_market_places"
 )
 
 type Config struct {
