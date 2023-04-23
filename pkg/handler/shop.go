@@ -9,6 +9,7 @@ import (
 func (h *Handler) createShop(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
+		return
 	}
 	var input posCreditation.TodoShop
 	if err := c.BindJSON(&input); err != nil {
@@ -32,6 +33,7 @@ type getAllShopsResponse struct {
 func (h *Handler) getAllShops(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
+		return
 	}
 
 	lists, err := h.services.TodoShop.GetAll()
@@ -48,6 +50,7 @@ func (h *Handler) getAllShops(c *gin.Context) {
 func (h *Handler) getShopById(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
+		return
 	}
 
 	id := c.Param("id")
@@ -64,6 +67,7 @@ func (h *Handler) getShopById(c *gin.Context) {
 func (h *Handler) updateShop(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
+		return
 	}
 
 	id := c.Param("id")
@@ -85,6 +89,7 @@ func (h *Handler) updateShop(c *gin.Context) {
 func (h *Handler) deleteShop(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
+		return
 	}
 
 	id := c.Param("id")

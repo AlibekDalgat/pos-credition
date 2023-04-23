@@ -1,27 +1,9 @@
 package handler
 
 import (
-	"github.com/AlibekDalgat/pos-credition"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
-
-func (h *Handler) signUp(c *gin.Context) {
-	var input posCreditation.User
-
-	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-	}
-
-	id, err := h.services.Authorization.CreateUser(input)
-	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
-	}
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"id": id,
-	})
-}
 
 type signInInput struct {
 	Login    string `json:"login" binding:"required"`

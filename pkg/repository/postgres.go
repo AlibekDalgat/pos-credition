@@ -6,7 +6,6 @@ import (
 )
 
 const (
-	usersTable               = "users"
 	shopTable                = "shops"
 	marketPlacesTable        = "market_places"
 	agentsTable              = "agents"

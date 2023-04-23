@@ -61,7 +61,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 				items.GET("/:id", h.getAllCredits)
 				items.PUT("/:id", h.deleteCredit)
 			}
-
 		*/
 
 	}

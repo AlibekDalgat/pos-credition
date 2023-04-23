@@ -9,6 +9,7 @@ import (
 func (h *Handler) createAgent(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
+		return
 	}
 
 	var input posCreditation.TodoAgent
@@ -34,6 +35,7 @@ type getAllAgentsResponse struct {
 func (h *Handler) getAllAgents(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
+		return
 	}
 
 	agents, err := h.services.TodoAgent.GetAll()
@@ -49,6 +51,7 @@ func (h *Handler) getAllAgents(c *gin.Context) {
 func (h *Handler) getAgentById(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
+		return
 	}
 
 	agent := c.Param("id")
@@ -64,6 +67,7 @@ func (h *Handler) getAgentById(c *gin.Context) {
 func (h *Handler) updateAgent(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
+		return
 	}
 
 	agentId := c.Param("id")
@@ -85,6 +89,7 @@ func (h *Handler) updateAgent(c *gin.Context) {
 func (h *Handler) deleteAgent(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
+		return
 	}
 
 	id := c.Param("id")
@@ -103,6 +108,7 @@ func (h *Handler) deleteAgent(c *gin.Context) {
 func (h *Handler) newAccess(c *gin.Context) {
 	if ok := checkRole(c); !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "нет прав")
+		return
 	}
 
 	agentId := c.Param("id")

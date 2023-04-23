@@ -6,7 +6,6 @@ import (
 )
 
 type Authorization interface {
-	CreateUser(user posCreditation.User) (int, error)
 	GenerateTokenForAgent(login, password string) (string, error)
 	GenerateTokenForAdmin() (string, error)
 	ParseToken(token string) (string, bool, error)

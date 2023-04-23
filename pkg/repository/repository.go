@@ -6,8 +6,7 @@ import (
 )
 
 type Authorization interface {
-	CreateUser(user posCreditation.User) (int, error)
-	GetUser(username, password string) (posCreditation.User, error)
+	GetUser(username, password string) (posCreditation.TodoAgent, error)
 }
 
 type TodoShop interface {
@@ -44,6 +43,7 @@ type Repository struct {
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
+		Authorization:   NewAuthPostgres(db),
 		TodoShop:        NewTodoShopPostgres(db),
 		TodoMarketPlace: NewTodoMarketPlacePostgres(db),
 		TodoAgent:       NewTodoAgentPostgres(db),

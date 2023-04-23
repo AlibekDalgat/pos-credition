@@ -4,7 +4,6 @@ import (
 	"crypto/sha1"
 	"errors"
 	"fmt"
-	"github.com/AlibekDalgat/pos-credition"
 	"github.com/AlibekDalgat/pos-credition/pkg/repository"
 	"github.com/golang-jwt/jwt"
 	"github.com/spf13/viper"
@@ -31,11 +30,6 @@ func NewAuthService(repo repository.Authorization) *AuthService {
 	return &AuthService{repo}
 }
 
-func (s *AuthService) CreateUser(user posCreditation.User) (int, error) {
-	user.Password = generatePassword(user.Password)
-	return s.repo.CreateUser(user)
-}
-
 func (s *AuthService) GenerateTokenForAgent(login, password string) (string, error) {
 	user, err := s.repo.GetUser(login, generatePassword(password))
 	if err != nil {
@@ -46,7 +40,7 @@ func (s *AuthService) GenerateTokenForAgent(login, password string) (string, err
 			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
-		user.Id,
+		user.Login,
 		false,
 	})
 
