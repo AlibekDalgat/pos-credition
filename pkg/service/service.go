@@ -36,11 +36,16 @@ type TodoAgent interface {
 	NewAccessToMP(marketPlace posCreditation.AccessingToMP, id string) (int, error)
 }
 
+type Credit interface {
+	Create(cr posCreditation.NewCredit, mpId, agentId string) (int, error)
+}
+
 type Service struct {
 	Authorization
 	TodoShop
 	TodoMarketPlace
 	TodoAgent
+	Credit
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -49,5 +54,6 @@ func NewService(repos *repository.Repository) *Service {
 		TodoShop:        NewTodoShopService(repos.TodoShop),
 		TodoMarketPlace: NewTodoMarketPlaceService(repos.TodoMarketPlace),
 		TodoAgent:       NewTodoAgentService(repos.TodoAgent),
+		Credit:          NewCreditService(repos.Credit),
 	}
 }

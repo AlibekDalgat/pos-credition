@@ -54,14 +54,10 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 		}
 
-		/*
-			items := api.Group("/agent")
-			{
-				items.PUT("/", h.createCredits)
-				items.GET("/:id", h.getAllCredits)
-				items.PUT("/:id", h.deleteCredit)
-			}
-		*/
+		items := api.Group("/agent")
+		{
+			items.POST("/:tmId", h.createCredit)
+		}
 
 	}
 	return router

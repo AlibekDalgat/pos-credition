@@ -60,3 +60,10 @@ func (input UpdateAgentInput) Validate() error {
 	}
 	return nil
 }
+
+type NewCredit struct {
+	Id        int    `json:"id" db:"id"`
+	Title     string `json:"title" db:"title" binding:"required"`
+	Summary   string `json:"summary" db:"summary" binding:"required"`
+	Timelimit string `json:"timelimit" db:"timelimit" binding:"required"`
+}

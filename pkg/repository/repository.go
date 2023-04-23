@@ -33,12 +33,16 @@ type TodoAgent interface {
 	DeleteById(id string) error
 	NewAccessToMP(marketPlace posCreditation.AccessingToMP, id string) (int, error)
 }
+type Credit interface {
+	Create(cr posCreditation.NewCredit, mpId, agentId string) (int, error)
+}
 
 type Repository struct {
 	Authorization
 	TodoShop
 	TodoMarketPlace
 	TodoAgent
+	Credit
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -47,5 +51,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		TodoShop:        NewTodoShopPostgres(db),
 		TodoMarketPlace: NewTodoMarketPlacePostgres(db),
 		TodoAgent:       NewTodoAgentPostgres(db),
+		Credit:          NewCreditPostgres(db),
 	}
 }

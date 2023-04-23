@@ -10,6 +10,7 @@ const (
 	marketPlacesTable        = "market_places"
 	agentsTable              = "agents"
 	agentsMarketsPlacesTable = "agents_market_places"
+	creditsTable             = "credits"
 )
 
 type Config struct {

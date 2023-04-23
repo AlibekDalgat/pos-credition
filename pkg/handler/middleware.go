@@ -48,20 +48,18 @@ func (h *Handler) userIdentity(c *gin.Context) {
 	c.Set(userCtx, userId)
 	c.Set(isAdmin, checkAccess)
 
-	//is, _ := c.Get("isAdmin")
-	//fmt.Println("isamiiiiiiiiiiiiiiiiiiiiiiiiiin: ", is)
 }
 
-func getUserId(c *gin.Context) (int, error) {
+func getUserId(c *gin.Context) (string, error) {
 	id, ok := c.Get(userCtx)
 	if !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "qollawçunu id'si tabılmadı")
-		return 0, errors.New("qollawçunu id'si tabılmadı")
+		return "-", errors.New("qollawçunu id'si tabılmadı")
 	}
-	idInt, ok := id.(int)
+	idInt, ok := id.(string)
 	if !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "qollawçunu id'si tüzsüz örnek bolup")
-		return 0, errors.New("qollawçunu id'si tüzsüz örnek bolup")
+		return "-", errors.New("qollawçunu id'si tüzsüz örnek bolup")
 	}
 
 	return idInt, nil
