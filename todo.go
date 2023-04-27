@@ -22,12 +22,6 @@ type AccessingToMP struct {
 	Id string `json:"id" db:"id"`
 }
 
-type ListsItem struct {
-	Id     int
-	ListId int
-	ItemId int
-}
-
 type UpdateShopInput struct {
 	Title *string `json:"title"`
 }

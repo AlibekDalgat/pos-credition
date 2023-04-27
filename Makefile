@@ -4,5 +4,7 @@ build:
 run:
 	docker-compose up app
 
-migrate:
-	migrate -path ./schema -database 'postgres://postgres:postgres:5437/postgres?sslmode=disable' up
+migrate-up:
+	migrate -path ./schema -database 'postgres://postgres:postgres@localhost:5437/postgres?sslmode=disable' up
+migrate-down:
+	migrate -path ./schema -database 'postgres://postgres:postgres@localhost:5437/postgres?sslmode=disable' down
