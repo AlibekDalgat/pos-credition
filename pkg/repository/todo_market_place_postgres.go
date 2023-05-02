@@ -38,9 +38,9 @@ func (marketPlacePostgres *TodoMarketPlacePostgres) GetAll() ([]posCreditation.T
 
 func (marketPlacePostgres *TodoMarketPlacePostgres) GetById(markePlaceId string) (posCreditation.TodoMarketPlace, error) {
 	var marketPlace posCreditation.TodoMarketPlace
-	query := fmt.Sprintf("SELECT mp.id, mp.title, mp.shop_id FROM %s mp WHERE mp.id = '%s'",
-		marketPlacesTable, markePlaceId)
-	if err := marketPlacePostgres.db.Get(&marketPlace, query); err != nil {
+	query := fmt.Sprintf("SELECT mp.id, mp.title, mp.shop_id FROM %s mp WHERE mp.id = $1",
+		marketPlacesTable)
+	if err := marketPlacePostgres.db.Get(&marketPlace, query, markePlaceId); err != nil {
 		return marketPlace, err
 	}
 	return marketPlace, nil
@@ -51,31 +51,31 @@ func (marketPlacePostgres *TodoMarketPlacePostgres) UpdateById(marketPlaceId str
 	args := make([]interface{}, 0)
 	argId := 1
 
-	if input.Title != nil {
-		setValues = append(setValues, fmt.Sprintf("title=$%d", argId))
+	if input.Title != nil && *input.Title != "" {
+		setValues = append(setValues, fmt.Sprintf("title= $%d", argId))
 		args = append(args, *input.Title)
 		argId++
 	}
 
 	if input.ShopId != nil {
-		setValues = append(setValues, fmt.Sprintf("shop_id=$%d", argId))
+		setValues = append(setValues, fmt.Sprintf("shop_id= $%d", argId))
 		args = append(args, *input.ShopId)
 		argId++
 	}
 	setQuery := strings.Join(setValues, ", ")
 
-	query := fmt.Sprintf("UPDATE %s mp SET %s WHERE mp.id='%s'",
-		marketPlacesTable, setQuery, marketPlaceId)
-
+	query := fmt.Sprintf("UPDATE %s mp SET %s WHERE mp.id= $%d",
+		marketPlacesTable, setQuery, argId)
+	args = append(args, marketPlaceId)
 	_, err := marketPlacePostgres.db.Exec(query, args...)
 	fmt.Println(err)
 	return err
 }
 
 func (marketPlacePostgres *TodoMarketPlacePostgres) DeleteById(marketPlaceId string) error {
-	query := fmt.Sprintf("DELETE FROM %s mp WHERE mp.id = '%s'",
-		marketPlacesTable, marketPlaceId)
-	res, err := marketPlacePostgres.db.Exec(query)
+	query := fmt.Sprintf("DELETE FROM %s mp WHERE mp.id = $1",
+		marketPlacesTable)
+	res, err := marketPlacePostgres.db.Exec(query, marketPlaceId)
 	rowsDeleted, err := res.RowsAffected()
 	if rowsDeleted == 0 {
 		err = errors.New("нет такойторговой точки")

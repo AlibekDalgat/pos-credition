@@ -38,9 +38,9 @@ func (agentPostgres *TodoAgentPostgres) GetAll() ([]posCreditation.TodoAgent, er
 
 func (agentPostgres *TodoAgentPostgres) GetById(agentId string) (posCreditation.TodoAgent, error) {
 	var item posCreditation.TodoAgent
-	query := fmt.Sprintf("SELECT ag.fio, ag.login FROM %s ag WHERE ag.login = '%s'",
-		agentsTable, agentId)
-	if err := agentPostgres.db.Get(&item, query); err != nil {
+	query := fmt.Sprintf("SELECT ag.fio, ag.login FROM %s ag WHERE ag.login = $1",
+		agentsTable)
+	if err := agentPostgres.db.Get(&item, query, agentId); err != nil {
 		return item, err
 	}
 	return item, nil
@@ -48,12 +48,12 @@ func (agentPostgres *TodoAgentPostgres) GetById(agentId string) (posCreditation.
 
 func (agentPostgres *TodoAgentPostgres) UpdateById(agentId string, input posCreditation.UpdateAgentInput) error {
 	inputFio := *input.Fio
-	query := fmt.Sprintf("UPDATE %s ag SET fio='%s' WHERE login='%s'",
-		agentsTable, inputFio, agentId)
+	query := fmt.Sprintf("UPDATE %s ag SET fio= $1 WHERE login= $2",
+		agentsTable)
 
 	logrus.Debugf("updateQuery: %s", query)
 	logrus.Debugf("args: %s	", inputFio)
-	res, err := agentPostgres.db.Exec(query)
+	res, err := agentPostgres.db.Exec(query, inputFio, agentId)
 	rowsDeleted, err := res.RowsAffected()
 	if rowsDeleted == 0 {
 		err = errors.New("нет такой торговой точки")
@@ -62,9 +62,9 @@ func (agentPostgres *TodoAgentPostgres) UpdateById(agentId string, input posCred
 }
 
 func (agentPostgres *TodoAgentPostgres) DeleteById(agentId string) error {
-	query := fmt.Sprintf("DELETE FROM %s ag WHERE ag.login = '%s'",
-		agentsTable, agentId)
-	res, err := agentPostgres.db.Exec(query)
+	query := fmt.Sprintf("DELETE FROM %s ag WHERE ag.login = $1",
+		agentsTable)
+	res, err := agentPostgres.db.Exec(query, agentId)
 	rowsDeleted, err := res.RowsAffected()
 	if rowsDeleted == 0 {
 		err = errors.New("нет такойторговой агента")
