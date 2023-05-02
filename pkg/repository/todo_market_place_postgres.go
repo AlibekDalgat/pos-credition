@@ -5,19 +5,18 @@ import (
 	"fmt"
 	"github.com/AlibekDalgat/pos-credition"
 	"github.com/jmoiron/sqlx"
-	"github.com/sirupsen/logrus"
+	"strings"
 )
 
-type TodoItemPostgres struct {
+type TodoMarketPlacePostgres struct {
 	db *sqlx.DB
 }
 
-func NewTodoMarketPlacePostgres(db *sqlx.DB) *TodoItemPostgres {
-	return &TodoItemPostgres{db}
+func NewTodoMarketPlacePostgres(db *sqlx.DB) *TodoMarketPlacePostgres {
+	return &TodoMarketPlacePostgres{db}
 }
 
-func (marketPlacePostgres *TodoItemPostgres) Create(marketPlace posCreditation.TodoMarketPlace) (string, error) {
-	fmt.Println("зашёл в постгрес")
+func (marketPlacePostgres *TodoMarketPlacePostgres) Create(marketPlace posCreditation.TodoMarketPlace) (string, error) {
 	var id string
 	query := fmt.Sprintf("INSERT INTO %s (id, title, shop_id) values ($1, $2, $3) RETURNING id", marketPlacesTable)
 	row := marketPlacePostgres.db.QueryRow(query, marketPlace.Id, marketPlace.Title, marketPlace.ShopId)
@@ -27,7 +26,7 @@ func (marketPlacePostgres *TodoItemPostgres) Create(marketPlace posCreditation.T
 	return id, nil
 }
 
-func (marketPlacePostgres *TodoItemPostgres) GetAll() ([]posCreditation.TodoMarketPlace, error) {
+func (marketPlacePostgres *TodoMarketPlacePostgres) GetAll() ([]posCreditation.TodoMarketPlace, error) {
 	var marketPlaces []posCreditation.TodoMarketPlace
 	query := fmt.Sprintf("SELECT mp.id, mp.title, mp.shop_id FROM %s mp",
 		marketPlacesTable)
@@ -37,7 +36,7 @@ func (marketPlacePostgres *TodoItemPostgres) GetAll() ([]posCreditation.TodoMark
 	return marketPlaces, nil
 }
 
-func (marketPlacePostgres *TodoItemPostgres) GetById(markePlaceId string) (posCreditation.TodoMarketPlace, error) {
+func (marketPlacePostgres *TodoMarketPlacePostgres) GetById(markePlaceId string) (posCreditation.TodoMarketPlace, error) {
 	var marketPlace posCreditation.TodoMarketPlace
 	query := fmt.Sprintf("SELECT mp.id, mp.title, mp.shop_id FROM %s mp WHERE mp.id = '%s'",
 		marketPlacesTable, markePlaceId)
@@ -47,18 +46,33 @@ func (marketPlacePostgres *TodoItemPostgres) GetById(markePlaceId string) (posCr
 	return marketPlace, nil
 }
 
-func (marketPlacePostgres *TodoItemPostgres) UpdateById(marketPlaceId string, input posCreditation.UpdateMarketPlaceInput) error {
-	inputTitle := *input.Title
-	query := fmt.Sprintf("UPDATE %s mp SET title='%s' WHERE id='%s'",
-		marketPlacesTable, inputTitle, marketPlaceId)
+func (marketPlacePostgres *TodoMarketPlacePostgres) UpdateById(marketPlaceId string, input posCreditation.UpdateMarketPlaceInput) error {
+	setValues := make([]string, 0)
+	args := make([]interface{}, 0)
+	argId := 1
 
-	logrus.Debugf("updateQuery: %s", query)
-	logrus.Debugf("args: %s	", inputTitle)
-	_, err := marketPlacePostgres.db.Exec(query)
+	if input.Title != nil {
+		setValues = append(setValues, fmt.Sprintf("title=$%d", argId))
+		args = append(args, *input.Title)
+		argId++
+	}
+
+	if input.ShopId != nil {
+		setValues = append(setValues, fmt.Sprintf("shop_id=$%d", argId))
+		args = append(args, *input.ShopId)
+		argId++
+	}
+	setQuery := strings.Join(setValues, ", ")
+
+	query := fmt.Sprintf("UPDATE %s mp SET %s WHERE mp.id='%s'",
+		marketPlacesTable, setQuery, marketPlaceId)
+
+	_, err := marketPlacePostgres.db.Exec(query, args...)
+	fmt.Println(err)
 	return err
 }
 
-func (marketPlacePostgres *TodoItemPostgres) DeleteById(marketPlaceId string) error {
+func (marketPlacePostgres *TodoMarketPlacePostgres) DeleteById(marketPlaceId string) error {
 	query := fmt.Sprintf("DELETE FROM %s mp WHERE mp.id = '%s'",
 		marketPlacesTable, marketPlaceId)
 	res, err := marketPlacePostgres.db.Exec(query)

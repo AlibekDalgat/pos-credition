@@ -14,6 +14,7 @@ func (h *Handler) createShop(c *gin.Context) {
 	var input posCreditation.TodoShop
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
 	}
 	id, err := h.services.TodoShop.Create(input)
 	if err != nil {

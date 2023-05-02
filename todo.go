@@ -34,11 +34,12 @@ func (input UpdateShopInput) Validate() error {
 }
 
 type UpdateMarketPlaceInput struct {
-	Title *string `json:"title"`
+	Title  *string `json:"title"`
+	ShopId *string `json:"shop_id"`
 }
 
 func (input UpdateMarketPlaceInput) Validate() error {
-	if input.Title == nil {
+	if input.Title == nil && input.ShopId == nil {
 		return errors.New("update strukturunuki mağnalar yoq")
 	}
 	return nil

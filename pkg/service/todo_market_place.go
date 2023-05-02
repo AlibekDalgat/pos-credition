@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"github.com/AlibekDalgat/pos-credition"
 	"github.com/AlibekDalgat/pos-credition/pkg/repository"
 )
@@ -16,7 +15,6 @@ func NewTodoMarketPlaceService(listRepo repository.TodoMarketPlace) *TodoMarketP
 }
 
 func (itemService *TodoMarketPlaceService) Create(marketPlace posCreditation.TodoMarketPlace) (string, error) {
-	fmt.Println("зашёл в сервис")
 	if marketPlace.Id == "" {
 		return "", errors.New("не введён id")
 	}

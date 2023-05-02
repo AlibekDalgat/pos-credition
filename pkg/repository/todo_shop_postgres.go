@@ -58,6 +58,10 @@ func (shopPostgres *TodoShopPostgres) UpdateById(id string, input posCreditation
 
 	logrus.Debugf("updateQuery: %s", query)
 	logrus.Debugf("args: %s	", input.Title)
-	_, err := shopPostgres.db.Exec(query)
+	res, err := shopPostgres.db.Exec(query)
+	rowsUpdated, err := res.RowsAffected()
+	if rowsUpdated == 0 {
+		err = errors.New("нет такой магазина")
+	}
 	return err
 }

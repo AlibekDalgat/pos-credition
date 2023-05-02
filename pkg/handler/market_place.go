@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/AlibekDalgat/pos-credition"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -18,7 +17,6 @@ func (h *Handler) createMarketPlace(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-	fmt.Println("зашёл в хендлер")
 	id, err := h.services.TodoMarketPlace.Create(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
@@ -82,6 +80,7 @@ func (h *Handler) updateMarketPlace(c *gin.Context) {
 
 	if err := h.services.TodoMarketPlace.UpdateById(marketPlaceId, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, statusResponse{

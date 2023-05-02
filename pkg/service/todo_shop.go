@@ -16,7 +16,7 @@ func NewTodoShopService(repo repository.TodoShop) *TodoShopService {
 
 func (shopService *TodoShopService) Create(shop posCreditation.TodoShop) (string, error) {
 	if shop.Id == "" {
-		return "", errors.New("не введён id")
+		return "", errors.New("не введена информация о магазине")
 	}
 	return shopService.repo.Create(shop)
 }
@@ -36,6 +36,9 @@ func (shopService *TodoShopService) DeleteById(id string) error {
 func (shopService *TodoShopService) UpdateById(id string, input posCreditation.UpdateShopInput) error {
 	if err := input.Validate(); err != nil {
 		return err
+	}
+	if *input.Title == "" {
+		return errors.New("не введена информация о магазине")
 	}
 	return shopService.repo.UpdateById(id, input)
 }
