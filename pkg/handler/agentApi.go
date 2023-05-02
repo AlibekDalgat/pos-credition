@@ -8,7 +8,7 @@ import (
 
 func (h *Handler) createCredit(c *gin.Context) {
 	agentId, err := getUserId(c)
-	mpId := c.Param("tmId")
+	mpId := c.Param("mpId")
 	var input posCreditation.NewCredit
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())

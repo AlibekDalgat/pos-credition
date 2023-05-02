@@ -31,6 +31,9 @@ func (h *Handler) createAgent(c *gin.Context) {
 type getAllAgentsResponse struct {
 	Data []posCreditation.TodoAgent `json:"data"`
 }
+type getInfoMPAgentResponse struct {
+	Data []posCreditation.InfoMPsAgent `json:"data"`
+}
 
 func (h *Handler) getAllAgents(c *gin.Context) {
 	if ok := checkRole(c); !ok {
@@ -41,6 +44,7 @@ func (h *Handler) getAllAgents(c *gin.Context) {
 	agents, err := h.services.TodoAgent.GetAll()
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, getAllAgentsResponse{
@@ -56,12 +60,15 @@ func (h *Handler) getAgentById(c *gin.Context) {
 
 	agent := c.Param("id")
 
-	item, err := h.services.TodoAgent.GetById(agent)
+	infoMPsAgent, err := h.services.TodoAgent.GetById(agent)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
 	}
 
-	c.JSON(http.StatusOK, item)
+	c.JSON(http.StatusOK, getInfoMPAgentResponse{
+		Data: infoMPsAgent,
+	})
 }
 
 func (h *Handler) updateAgent(c *gin.Context) {
@@ -80,6 +87,7 @@ func (h *Handler) updateAgent(c *gin.Context) {
 
 	if err := h.services.TodoAgent.UpdateById(agentId, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, statusResponse{

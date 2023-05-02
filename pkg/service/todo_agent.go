@@ -22,7 +22,7 @@ func (agentService *TodoAgentService) GetAll() ([]posCreditation.TodoAgent, erro
 	return agentService.repo.GetAll()
 }
 
-func (agentService *TodoAgentService) GetById(agentId string) (posCreditation.TodoAgent, error) {
+func (agentService *TodoAgentService) GetById(agentId string) ([]posCreditation.InfoMPsAgent, error) {
 	return agentService.repo.GetById(agentId)
 }
 

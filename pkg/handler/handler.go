@@ -56,7 +56,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 		items := api.Group("/agent")
 		{
-			items.POST("/:tmId", h.createCredit)
+			items.POST("/:mpId", h.createCredit)
 		}
 
 	}

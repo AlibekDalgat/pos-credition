@@ -6,7 +6,7 @@ admin:
 
 db:
   username: "postgres"
-  host: "localhost"
+  host: "db"
   port: "5432"
   dbname: "postgres"
   sslmode: "disable"

@@ -36,14 +36,14 @@ func (agentPostgres *TodoAgentPostgres) GetAll() ([]posCreditation.TodoAgent, er
 	return agents, nil
 }
 
-func (agentPostgres *TodoAgentPostgres) GetById(agentId string) (posCreditation.TodoAgent, error) {
-	var item posCreditation.TodoAgent
-	query := fmt.Sprintf("SELECT ag.fio, ag.login FROM %s ag WHERE ag.login = $1",
-		agentsTable)
-	if err := agentPostgres.db.Get(&item, query, agentId); err != nil {
-		return item, err
+func (agentPostgres *TodoAgentPostgres) GetById(agentId string) ([]posCreditation.InfoMPsAgent, error) {
+	var infoMPsAgent []posCreditation.InfoMPsAgent
+	query := fmt.Sprintf("SELECT ag.fio, agMp.m_place_id, mp.title, mp.shop_id FROM %s ag JOIN %s agMp ON ag.login = agMp.agent_id JOIN %s mp ON mp.id=agMp.m_place_id WHERE ag.login = $1",
+		agentsTable, agentsMarketsPlacesTable, marketPlacesTable)
+	if err := agentPostgres.db.Select(&infoMPsAgent, query, agentId); err != nil {
+		return infoMPsAgent, err
 	}
-	return item, nil
+	return infoMPsAgent, nil
 }
 
 func (agentPostgres *TodoAgentPostgres) UpdateById(agentId string, input posCreditation.UpdateAgentInput) error {

@@ -28,7 +28,7 @@ type TodoMarketPlace interface {
 type TodoAgent interface {
 	Create(agent posCreditation.TodoAgent) (string, error)
 	GetAll() ([]posCreditation.TodoAgent, error)
-	GetById(agentId string) (posCreditation.TodoAgent, error)
+	GetById(agentId string) ([]posCreditation.InfoMPsAgent, error)
 	UpdateById(agentId string, input posCreditation.UpdateAgentInput) error
 	DeleteById(id string) error
 	NewAccessToMP(marketPlace posCreditation.AccessingToMP, id string) (int, error)
